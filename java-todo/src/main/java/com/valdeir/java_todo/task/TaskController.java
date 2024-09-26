@@ -44,11 +44,11 @@ public class TaskController {
     }
     
     
-    @GetMapping("/") 
+    @GetMapping("/{userId}") 
     public List<TaskModel> list(HttpServletRequest request){
         var idUser = request.getAttribute("userId");
         var tasks =  this.iTaskRepository.findByIdUser((UUID) idUser);
-        
+        System.out.println(idUser);
         return tasks;
     }
     
@@ -59,8 +59,5 @@ public class TaskController {
         taskModel.setId(idTask);
        
         return taskModel;
-
-
-
     }
 }
