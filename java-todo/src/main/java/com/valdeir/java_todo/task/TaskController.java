@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.valdeir.java_todo.utils.Utils;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,20 +46,19 @@ public class TaskController {
     }
     
     
-    @GetMapping("/{userId}") 
+    @GetMapping("/") 
     public List<TaskModel> list(HttpServletRequest request){
         var idUser = request.getAttribute("userId");
         var tasks =  this.iTaskRepository.findByIdUser((UUID) idUser);
-        System.out.println(idUser);
         return tasks;
     }
     
     @PutMapping("/{idTask}")
     public TaskModel update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID idTask){
-        var idUser = request.getAttribute("userId");
-        taskModel.setIdUser((UUID) idUser); 
-        taskModel.setId(idTask);
        
-        return taskModel;
+        var task = this.iTaskRepository.findById(idTask).orElse(null);
+        Utils.copyNonNullProperts(taskModel, task);
+       
+        return this.iTaskRepository.save(task);
     }
 }
