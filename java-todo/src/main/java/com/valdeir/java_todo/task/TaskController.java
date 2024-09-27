@@ -54,11 +54,23 @@ public class TaskController {
     }
     
     @PutMapping("/{idTask}")
-    public TaskModel update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID idTask){
+    public ResponseEntity  update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID idTask){
        
         var task = this.iTaskRepository.findById(idTask).orElse(null);
+        var idUser = request.getAttribute("userId");
+
+        if( task == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can't fin any task whith this ID: ["+idTask+"]");
+        }
+
+            if(!task.getIdUser().equals(idUser)){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(" The current user is not allow to change this task!");
+            }
+
+
         Utils.copyNonNullProperts(taskModel, task);
+        var taskUpdated = this.iTaskRepository.save(task);
        
-        return this.iTaskRepository.save(task);
+        return ResponseEntity.ok(taskUpdated);
     }
 }
