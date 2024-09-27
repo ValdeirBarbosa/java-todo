@@ -11,6 +11,6 @@ RUN mnv clean install
 FROM openjdk:17-jdk-slim
 expose 8080
 
-copy --from=build /target/java-todo-1.0.0.jar app.jar
+copy --from=build /target/java_todo-1.0.0.jar app.jar
 
 ENTRYPOINT ["java","-jar","app.jar"]
